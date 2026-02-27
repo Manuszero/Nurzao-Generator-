@@ -1,7 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Sparkles, Zap, Copy, Download, ArrowRight } from "lucide-react";
+import { Sparkles, Zap, Copy, Download, ArrowRight, ShieldCheck, Globe } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { useState } from "react";
 
@@ -11,150 +11,140 @@ export default function Home() {
 
   const examples = {
     article: {
-      title: "Professional Blog Article",
-      content: "The Future of Artificial Intelligence in Content Creation\n\nArtificial intelligence is revolutionizing how we create content. From generating compelling headlines to crafting entire articles, AI tools are becoming indispensable for content creators worldwide...",
+      title: "Strategic Asset Analysis: CYBXO",
+      content: "CYBXO represents the pinnacle of cyber-logic integration. In an era of shifting digital boundaries, CYBXO serves as a definitive interface for automated security protocols and high-frequency data sovereignty...",
     },
     social: {
-      title: "Engaging Social Media Post",
-      content: "🚀 Just launched our new AI-powered content generator! Create professional content in seconds, not hours. Perfect for marketers, writers, and creators. Try it free today! #AI #ContentCreation #Innovation",
+      title: "Executive Narrative: OASFY",
+      content: "Tranquility meets efficiency. OASFY is re-engineering the logistics of calm. Where others see complexity, we see a seamless oasis of streamlined operations. #LogisticsSovereignty #Oasfy #NurzaoNexus",
     },
     product: {
-      title: "Compelling Product Description",
-      content: "Experience the power of AI-driven content generation. Our platform uses advanced machine learning to create high-quality, engaging content tailored to your needs. Save time, boost productivity, and elevate your brand.",
+      title: "The Nurzao Protocol",
+      content: "An elite-grade intelligence engine designed for those who command digital assets. Precise. Authoritative. Sovereign. Transforming raw potential into market dominance.",
     },
   };
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="min-h-screen bg-[#050505] text-slate-200 selection:bg-cyan-500/30 font-sans">
         {/* Navigation */}
-        <nav className="border-b border-slate-700/50 backdrop-blur-sm sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <img src="/nurzao-logo.jpg" alt="Nurzao" className="w-10 h-10 rounded" />
-              <span className="text-xl font-bold text-white">Nurzao</span>
+        <nav className="border-b border-white/5 bg-black/50 backdrop-blur-xl sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+                <Sparkles className="text-white w-6 h-6" />
+              </div>
+              <span className="text-2xl font-black tracking-tighter text-white uppercase italic">NURZAO <span className="text-cyan-500">NEXUS</span></span>
             </div>
-            <a href={getLoginUrl()}>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                Get Started
-              </Button>
-            </a>
+            <Button 
+              onClick={() => window.location.href = getLoginUrl()} 
+              className="bg-white text-black hover:bg-cyan-400 transition-all duration-300 font-bold px-8 rounded-none tracking-widest"
+            >
+              ACCESS SYSTEM
+            </Button>
           </div>
         </nav>
 
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-          <div className="mb-8">
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Create Stunning Content
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
-                in Seconds
-              </span>
-            </h1>
-            <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-              Harness the power of AI to generate professional, engaging content for any purpose. From blog articles to social media posts, we've got you covered.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <a href={getLoginUrl()}>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg rounded-lg flex items-center gap-2">
-                Start Creating Free <ArrowRight className="w-5 h-5" />
-              </Button>
-            </a>
-            <Button variant="outline" className="border-slate-600 text-slate-200 px-8 py-6 text-lg rounded-lg hover:bg-slate-800">
-              Watch Demo
-            </Button>
-          </div>
-
-          {/* Feature Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mt-16">
-            {[
-              { icon: Zap, title: "Lightning Fast", desc: "Generate content in seconds" },
-              { icon: Sparkles, title: "AI-Powered", desc: "Advanced machine learning technology" },
-              { icon: Copy, title: "Easy to Use", desc: "Simple, intuitive interface" },
-            ].map((feature, i) => (
-              <Card key={i} className="bg-slate-800/50 border-slate-700 p-6 text-left hover:bg-slate-800/80 transition">
-                <feature.icon className="w-8 h-8 text-blue-400 mb-4" />
-                <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
-                <p className="text-slate-400">{feature.desc}</p>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Examples Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <h2 className="text-4xl font-bold text-white mb-12 text-center">See It In Action</h2>
+        <main className="relative overflow-hidden pt-32 pb-20">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent -z-10" />
           
-          <div className="flex gap-4 justify-center mb-8">
-            {["article", "social", "product"].map((type) => (
-              <Button
-                key={type}
-                variant={activeTab === type ? "default" : "outline"}
-                onClick={() => setActiveTab(type as any)}
-                className={activeTab === type ? "bg-blue-600" : "border-slate-600"}
-              >
-                {type === "article" && "Blog Article"}
-                {type === "social" && "Social Post"}
-                {type === "product" && "Product Description"}
-              </Button>
-            ))}
-          </div>
-
-          <Card className="bg-slate-800/50 border-slate-700 p-8">
-            <h3 className="text-2xl font-bold text-white mb-4">{examples[activeTab].title}</h3>
-            <p className="text-slate-300 whitespace-pre-wrap mb-6 leading-relaxed">
-              {examples[activeTab].content}
-            </p>
-            <div className="flex gap-4">
-              <Button className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2">
-                <Copy className="w-4 h-4" /> Copy
-              </Button>
-              <Button variant="outline" className="border-slate-600 flex items-center gap-2">
-                <Download className="w-4 h-4" /> Download
-              </Button>
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-mono tracking-[0.2em] mb-12 uppercase animate-pulse">
+              <Zap className="w-3 h-3" /> System Status: Operational // Sovereignty Confirmed
             </div>
-          </Card>
-        </section>
-
-        {/* CTA Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-          <Card className="bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border-blue-500/50 p-12">
-            <h2 className="text-3xl font-bold text-white mb-4">Ready to Transform Your Content?</h2>
-            <p className="text-slate-300 mb-8">Join thousands of creators using Nurzao to generate amazing content.</p>
-            <a href={getLoginUrl()}>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg">
-                Get Started Now
+            <h1 className="text-6xl md:text-8xl font-black text-white tracking-tightest mb-8 leading-[0.9]">
+              ARCHITECTING <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 italic">DIGITAL SOVEREIGNTY</span>
+            </h1>
+            <p className="max-w-2xl mx-auto text-slate-400 text-lg md:text-xl font-light leading-relaxed mb-12 tracking-wide">
+              The elite-tier intelligence engine for strategic narrative engineering and high-end asset valuation.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <Button 
+                size="lg" 
+                onClick={() => window.location.href = getLoginUrl()} 
+                className="h-14 px-10 bg-cyan-600 hover:bg-cyan-500 text-white rounded-none font-bold text-lg group transition-all"
+              >
+                INITIALIZE GENERATION <ArrowRight className="ml-2 group-hover:translate-x-2 transition-transform" />
               </Button>
-            </a>
-          </Card>
+              <div className="flex items-center gap-4 text-slate-500 font-mono text-sm tracking-tighter">
+                <span className="flex items-center gap-1"><ShieldCheck className="w-4 h-4 text-cyan-500" /> ENCRYPTED</span>
+                <span className="flex items-center gap-1"><Globe className="w-4 h-4 text-cyan-500" /> GLOBAL REACH</span>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        {/* Intelligence Preview Section */}
+        <section className="py-24 bg-black/40 border-y border-white/5">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-4xl font-bold text-white mb-6 tracking-tight">Intelligence Output <br/><span className="text-cyan-500">Architecture</span></h2>
+                <div className="space-y-4">
+                  {(['article', 'social', 'product'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`w-full text-left p-6 transition-all border ${activeTab === tab ? 'bg-cyan-500/10 border-cyan-500/50 text-white' : 'bg-transparent border-white/5 text-slate-500 hover:border-white/20'}`}
+                    >
+                      <span className="text-xs font-mono uppercase tracking-widest block mb-1">0{tab === 'article' ? 1 : tab === 'social' ? 2 : 3}</span>
+                      <span className="text-xl font-bold capitalize">{tab.replace('_', ' ')} Logic</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <Card className="bg-[#0a0a0a] border-white/10 p-8 rounded-none shadow-2xl relative">
+                <div className="absolute top-0 right-0 p-4 font-mono text-[10px] text-cyan-500/50">NODE: 2026_NURZAO</div>
+                <h3 className="text-cyan-500 font-mono text-sm mb-6 uppercase tracking-widest">{examples[activeTab].title}</h3>
+                <div className="space-y-4 text-slate-300 leading-relaxed font-light italic">
+                  {examples[activeTab].content.split('\\n').map((line, i) => (
+                    <p key={i}>{line}</p>
+                  ))}
+                </div>
+                <div className="mt-8 pt-6 border-t border-white/5 flex gap-4">
+                  <div className="w-2 h-2 rounded-full bg-cyan-500 animate-ping" />
+                  <div className="w-2 h-2 rounded-full bg-blue-600" />
+                  <div className="w-2 h-2 rounded-full bg-slate-800" />
+                </div>
+              </Card>
+            </div>
+          </div>
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-slate-700/50 bg-slate-900/50 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <footer className="bg-black py-20 border-t border-white/5">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
               <div>
-                <h3 className="text-white font-bold mb-4">About Nurzao</h3>
-                <p className="text-slate-400 text-sm">AI-powered content generation platform for creators and businesses.</p>
+                <div className="flex items-center gap-2 mb-6">
+                  <Sparkles className="text-cyan-500 w-6 h-6" />
+                  <span className="text-xl font-black text-white tracking-tighter italic">NURZAO</span>
+                </div>
+                <p className="text-slate-500 max-w-xs text-sm leading-relaxed">
+                  The ultimate intelligence nexus for digital asset command and narrative authority.
+                </p>
               </div>
               <div>
-                <h3 className="text-white font-bold mb-4">Support</h3>
-                <a href="mailto:Nurzao.Ops@gmail.com" className="text-blue-400 hover:text-blue-300 text-sm">
+                <h3 className="text-white font-bold mb-6 text-xs uppercase tracking-[0.3em]">Support Node</h3>
+                <a href="mailto:Nurzao.Ops@gmail.com" className="text-cyan-500 hover:text-cyan-400 font-mono text-sm underline decoration-cyan-500/30">
                   Nurzao.Ops@gmail.com
                 </a>
               </div>
-              <div>
-                <h3 className="text-white font-bold mb-4">Quick Links</h3>
-                <ul className="text-slate-400 text-sm space-y-2">
-                  <li><a href="#" className="hover:text-blue-400">Privacy Policy</a></li>
-                  <li><a href="#" className="hover:text-blue-400">Terms of Service</a></li>
+              <div className="text-right">
+                <h3 className="text-white font-bold mb-6 text-xs uppercase tracking-[0.3em]">Legal</h3>
+                <ul className="text-slate-500 text-sm space-y-3 font-mono">
+                  <li><a href="#" className="hover:text-cyan-400 transition-colors">PRIVACY_PROTOCOL</a></li>
+                  <li><a href="#" className="hover:text-cyan-400 transition-colors">TERMS_OF_SOVEREIGNTY</a></li>
                 </ul>
               </div>
             </div>
-            <div className="border-t border-slate-700/50 pt-8 text-center text-slate-400">
-              <p>&copy; 2026 Nurzao. All rights reserved. | Support: Nurzao.Ops@gmail.com</p>
+            <div className="pt-8 border-t border-white/5 text-center">
+              <p className="text-slate-600 text-[10px] font-mono tracking-widest">
+                &copy; 2026 NURZAO INTELLIGENCE NEXUS. ALL RIGHTS RESERVED. // ACCESS_ID: {user?.openId || 'GUEST_NODE'}
+              </p>
             </div>
           </div>
         </footer>
@@ -164,16 +154,21 @@ export default function Home() {
 
   // Authenticated view - redirect to generator
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-        <h1 className="text-4xl font-bold text-slate-900 mb-4">Welcome, {user?.name}!</h1>
-        <p className="text-xl text-slate-600 mb-8">Ready to create amazing content?</p>
-        <a href="/generator">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg">
-            Go to Content Generator
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6">
+       <div className="text-center animate-pulse">
+          <div className="w-16 h-16 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-cyan-500/50">
+            <Sparkles className="text-cyan-500 w-8 h-8" />
+          </div>
+          <h1 className="text-2xl font-black text-white tracking-widest mb-2 italic uppercase">Welcome, {user?.name}</h1>
+          <p className="text-cyan-500 font-mono text-xs tracking-[0.5em] mb-8">NEXUS CONNECTION ESTABLISHED</p>
+          <Button 
+            onClick={() => window.location.href = '/generator'} 
+            className="bg-white text-black hover:bg-cyan-400 font-bold px-12 h-14 rounded-none tracking-widest"
+          >
+            ENTER GENERATOR
           </Button>
-        </a>
-      </div>
+       </div>
     </div>
   );
 }
+ 
