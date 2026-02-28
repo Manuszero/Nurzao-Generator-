@@ -1,19 +1,16 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-// استخدام المفتاح من إعدادات Netlify
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_FORGE_API_KEY || "");
-
-export async function generateProfessionalContent(topic: string, type: string) {
+export async function generateProfessionalContent(topic: string, type: string, options: any) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-  const prompts: Record<string, string> = {
-    article: `اكتب مقالاً رسمياً واحترافياً حول: ${topic}. استخدم لغة رصينة، عناوين فرعية، ومقدمة وخاتمة قوية.`,
-    social: `اكتب محتوى إبداعي لمنصات التواصل الاجتماعي حول: ${topic}. اجعله جذاباً، قصيراً، ويتضمن هاشتاقات قوية وCall to Action.`,
-    product: `اكتب وصفاً تسويقياً مقنعاً للمنتج: ${topic}. ركز على الفوائد، القيمة المضافة، ولغة تبيع العاطفة قبل المنتج.`
-  };
+  const prompt = `
+    أنت كاتب محتوى خبير. المطلوب كتابة ${type === 'article' ? 'مقال رسمي' : type === 'social_post' ? 'منشور تواصل اجتماعي' : 'وصف منتج'}.
+    الموضوع: ${topic}.
+    الطول المطلوب: ${options.length}.
+    النبرة: ${options.tone}.
+    اللغة: ${options.lang === 'ar' ? 'العربية' : 'الإنجليزية'}.
+    اجعل المحتوى احترافياً، منظماً، وجذاباً.
+  `;
 
-  const selectedPrompt = prompts[type] || prompts.article;
-  const result = await model.generateContent(selectedPrompt);
+  const result = await model.generateContent(prompt);
   const response = await result.response;
   return response.text();
 }
