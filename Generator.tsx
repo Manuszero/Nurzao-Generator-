@@ -1,51 +1,33 @@
-import { useState } from "react";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Copy, Download, Loader2, Sparkles, Trash2 } from "lucide-react";
-import { trpc } from "@/lib/trpc";
-import { toast } from "sonner";
+import React, { useState } from "react";
+import { Copy, Download, Loader2, Sparkles, Trash2, FileText, Share2, ShoppingBag } from "lucide-react";
+import { generateProfessionalContent } from "./ai"; // تأكد أن ملف ai.ts محدث
 
 export default function Generator() {
-  const { user } = useAuth();
   const [contentType, setContentType] = useState<"article" | "social_post" | "product_description">("article");
   const [topic, setTopic] = useState("");
   const [contentLength, setContentLength] = useState<"short" | "medium" | "long">("medium");
   const [tone, setTone] = useState("professional");
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("ar");
   const [generatedContent, setGeneratedContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const generateMutation = trpc.content.generate.useMutation();
-  const historyQuery = trpc.content.history.useQuery({});
-  const deleteMutation = trpc.content.delete.useMutation();
-
   const handleGenerate = async () => {
     if (!topic.trim()) {
-      toast.error("Please enter a topic");
+      alert("الرجاء إدخال الموضوع أولاً");
       return;
     }
 
     setIsLoading(true);
     try {
-      const result = await generateMutation.mutateAsync({
-        contentType,
-        topic,
-        contentLength,
-        tone,
-        language,
+      // نرسل كل الخيارات للدالة في ملف ai.ts
+      const result = await generateProfessionalContent(topic, contentType, {
+        length: contentLength,
+        tone: tone,
+        lang: language
       });
-
-      if (result.success) {
-        setGeneratedContent(result.content);
-        toast.success("Content generated successfully!");
-        historyQuery.refetch();
-      }
+      setGeneratedContent(result);
     } catch (error) {
-      toast.error("Failed to generate content");
+      alert("فشل في توليد المحتوى. تأكد من إعدادات المفتاح.");
     } finally {
       setIsLoading(false);
     }
@@ -53,205 +35,100 @@ export default function Generator() {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedContent);
-    toast.success("Copied to clipboard!");
+    alert("تم النسخ إلى الحافظة!");
   };
 
   const handleDownload = () => {
     const element = document.createElement("a");
-    const file = new Blob([generatedContent], { type: "text/plain" });
+    const file = new Blob([generatedContent], { type: 'text/plain' });
     element.href = URL.createObjectURL(file);
-    element.download = `${contentType}-${Date.now()}.txt`;
+    element.download = `nurzao-content-${Date.now()}.txt`;
     document.body.appendChild(element);
     element.click();
-    document.body.removeChild(element);
-    toast.success("Downloaded successfully!");
-  };
-
-  const handleDelete = async (contentId: number) => {
-    try {
-      await deleteMutation.mutateAsync({ contentId });
-      toast.success("Content deleted");
-      historyQuery.refetch();
-    } catch (error) {
-      toast.error("Failed to delete content");
-    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-slate-900 flex items-center gap-3 mb-2">
-            <Sparkles className="w-8 h-8 text-blue-600" />
-            Content Generator
-          </h1>
-          <p className="text-slate-600">Welcome back, {user?.name}! Create amazing content in seconds.</p>
+    <div className="max-w-5xl mx-auto p-6 space-y-8 font-sans antialiased text-right" dir="rtl">
+      {/* Header */}
+      <div className="flex flex-col gap-2 border-b border-white/10 pb-6">
+        <h1 className="text-3xl font-black text-white flex items-center gap-3 justify-end">
+          NURZAO CONTENT GENERATOR <Sparkles className="text-cyan-500" />
+        </h1>
+        <p className="text-slate-400">نظام ذكاء اصطناعي لإنتاج المقالات والمحتوى التسويقي</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Settings Panel */}
+        <div className="lg:col-span-1 space-y-6 bg-[#0a0a0a] p-6 rounded-2xl border border-white/5">
+          <div>
+            <label className="block text-sm font-bold text-slate-300 mb-3">نوع المحتوى</label>
+            <div className="grid grid-cols-1 gap-2">
+              <button onClick={() => setContentType("article")} className={`p-3 rounded-lg flex items-center gap-3 transition-all ${contentType === 'article' ? 'bg-cyan-600 text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+                <FileText size={18} /> مقال رسمي
+              </button>
+              <button onClick={() => setContentType("social_post")} className={`p-3 rounded-lg flex items-center gap-3 transition-all ${contentType === 'social_post' ? 'bg-cyan-600 text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+                <Share2 size={18} /> منشور اجتماعي
+              </button>
+              <button onClick={() => setContentType("product_description")} className={`p-3 rounded-lg flex items-center gap-3 transition-all ${contentType === 'product_description' ? 'bg-cyan-600 text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+                <ShoppingBag size={18} /> وصف منتج
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-slate-300 mb-2">طول المحتوى</label>
+            <select value={contentLength} onChange={(e: any) => setContentLength(e.target.value)} className="w-full bg-black border border-white/10 p-3 rounded-lg text-white outline-none focus:border-cyan-500">
+              <option value="short">قصير</option>
+              <option value="medium">متوسط</option>
+              <option value="long">طويل</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-slate-300 mb-2">اللغة</label>
+            <select value={language} onChange={(e) => setLanguage(e.target.value)} className="w-full bg-black border border-white/10 p-3 rounded-lg text-white outline-none">
+              <option value="ar">العربية</option>
+              <option value="en">English</option>
+            </select>
+          </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Generator Panel */}
-          <div className="lg:col-span-2">
-            <Card className="p-8 shadow-lg">
-              <div className="space-y-6">
-                {/* Content Type */}
-                <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">Content Type</label>
-                  <Select value={contentType} onValueChange={(value: any) => setContentType(value)}>
-                    <SelectTrigger className="border-slate-300">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="article">Blog Article</SelectItem>
-                      <SelectItem value="social_post">Social Media Post</SelectItem>
-                      <SelectItem value="product_description">Product Description</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Topic */}
-                <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">Topic</label>
-                  <Textarea
-                    placeholder="Enter the topic or subject you want content about..."
-                    value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
-                    className="border-slate-300 min-h-24 resize-none"
-                  />
-                </div>
-
-                {/* Length & Tone */}
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-900 mb-2">Content Length</label>
-                    <Select value={contentLength} onValueChange={(value: any) => setContentLength(value)}>
-                      <SelectTrigger className="border-slate-300">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="short">Short (200-300 words)</SelectItem>
-                        <SelectItem value="medium">Medium (500-700 words)</SelectItem>
-                        <SelectItem value="long">Long (1000-1500 words)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-900 mb-2">Tone</label>
-                    <Select value={tone} onValueChange={setTone}>
-                      <SelectTrigger className="border-slate-300">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="professional">Professional</SelectItem>
-                        <SelectItem value="casual">Casual</SelectItem>
-                        <SelectItem value="friendly">Friendly</SelectItem>
-                        <SelectItem value="formal">Formal</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Language */}
-                <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">Language</label>
-                  <Select value={language} onValueChange={setLanguage}>
-                    <SelectTrigger className="border-slate-300">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="ar">Arabic</SelectItem>
-                      <SelectItem value="es">Spanish</SelectItem>
-                      <SelectItem value="fr">French</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Generate Button */}
-                <Button
-                  onClick={handleGenerate}
-                  disabled={isLoading || !topic.trim()}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg font-semibold"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Generating...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      Generate Content
-                    </>
-                  )}
-                </Button>
-              </div>
-            </Card>
+        {/* Input & Output Panel */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-[#0a0a0a] p-6 rounded-2xl border border-white/5">
+            <label className="block text-sm font-bold text-slate-300 mb-3">عن ماذا تريد أن نكتب؟</label>
+            <textarea
+              className="w-full bg-black border border-white/10 p-4 rounded-xl text-white min-h-[150px] outline-none focus:border-cyan-500 transition-all text-right"
+              placeholder="مثال: أهمية الأمن السيبراني في عام 2026..."
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+            />
+            <button
+              onClick={handleGenerate}
+              disabled={isLoading}
+              className="w-full mt-4 bg-white text-black font-black py-4 rounded-xl hover:bg-cyan-500 hover:text-white transition-all flex justify-center items-center gap-2"
+            >
+              {isLoading ? <Loader2 className="animate-spin" /> : "توليد المحتوى الآن"}
+            </button>
           </div>
 
-          {/* Preview & History */}
-          <div className="space-y-6">
-            {/* Generated Content Preview */}
-            {generatedContent && (
-              <Card className="p-6 shadow-lg">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">Generated Content</h3>
-                <p className="text-slate-700 text-sm mb-4 whitespace-pre-wrap max-h-64 overflow-y-auto">
-                  {generatedContent}
-                </p>
+          {generatedContent && (
+            <div className="bg-[#0d0d0d] p-6 rounded-2xl border border-white/10 relative group">
+              <div className="flex justify-between items-center mb-4 border-b border-white/5 pb-4">
                 <div className="flex gap-2">
-                  <Button
-                    onClick={handleCopy}
-                    variant="outline"
-                    className="flex-1 flex items-center justify-center gap-2"
-                  >
-                    <Copy className="w-4 h-4" /> Copy
-                  </Button>
-                  <Button
-                    onClick={handleDownload}
-                    variant="outline"
-                    className="flex-1 flex items-center justify-center gap-2"
-                  >
-                    <Download className="w-4 h-4" /> Download
-                  </Button>
+                  <button onClick={handleCopy} title="Copy" className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all"><Copy size={18} /></button>
+                  <button onClick={handleDownload} title="Download" className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all"><Download size={18} /></button>
                 </div>
-              </Card>
-            )}
-
-            {/* History */}
-            <Card className="p-6 shadow-lg">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Recent Content</h3>
-              <div className="space-y-3 max-h-96 overflow-y-auto">
-                {historyQuery.data && historyQuery.data.length > 0 ? (
-                  historyQuery.data.map((item) => (
-                    <div key={item.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200 hover:border-slate-300 transition">
-                      <div className="flex justify-between items-start gap-2 mb-2">
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-slate-900 capitalize">{item.contentType.replace("_", " ")}</p>
-                          <p className="text-xs text-slate-500 truncate">{item.topic}</p>
-                        </div>
-                        <Button
-                          onClick={() => handleDelete(item.id)}
-                          variant="ghost"
-                          size="sm"
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                      <p className="text-xs text-slate-500">
-                        {new Date(item.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-sm text-slate-500 text-center py-8">No content generated yet</p>
-                )}
+                <span className="text-xs font-mono text-cyan-500">NURZAO_OUTPUT_V1.0</span>
               </div>
-            </Card>
-          </div>
+              <div className="text-slate-300 leading-relaxed whitespace-pre-wrap font-sans text-lg">
+                {generatedContent}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
+ 
