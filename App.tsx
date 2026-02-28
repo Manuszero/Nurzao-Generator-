@@ -1,30 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Home from './Home';
 import Generator from './Generator';
 
-function App() {
-  // نظام بسيط للتنقل بين الصفحات بدون مكتبات خارجية
-  const [currentPage, setCurrentPage] = React.useState('home');
+export default function App() {
+  const [view, setView] = useState('home');
 
   return (
-    <div className="dark bg-[#050505] min-h-screen text-white">
-      {currentPage === 'home' ? (
-        <div onClick={() => setCurrentPage('generator')} className="cursor-pointer">
+    <div className="min-h-screen bg-[#050505] text-white font-sans">
+      {view === 'home' ? (
+        <div onClick={() => setView('generator')} className="cursor-pointer">
           <Home />
         </div>
       ) : (
-        <div className="pt-10">
-          <Generator />
+        <div className="container mx-auto px-4 py-10">
           <button 
-            onClick={() => setCurrentPage('home')}
-            className="block mx-auto mt-8 text-slate-500 hover:text-cyan-400 transition-all font-mono text-sm"
+            onClick={() => setView('home')}
+            className="mb-8 text-cyan-500 hover:text-white transition-colors font-mono"
           >
-            [ BACK_TO_NEXUS ]
+            ← BACK_TO_SYSTEM
           </button>
+          <Generator />
         </div>
       )}
     </div>
   );
 }
-
-export default App;
